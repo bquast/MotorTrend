@@ -1,0 +1,43 @@
+Motor Trend - Bastiaan Quast
+========================================================
+Executive Summary
+--------------------------------------------------------
+We look at, we find.
+
+Analysis
+--------------------------------------------------------
+We start by loading the **mtcars** data frame and inspecting the data. Recode to a logical **automatic** variable, and inspect the relevant variables.
+
+```{r echo=TRUE, eval=TRUE}
+data( mtcars )
+mtcars$automatic <- mtcars$am == 0
+attach( mtcars )
+summary( mpg )
+summary( automatic )
+```
+
+Some plots.
+
+```{r echo=TRUE, eval=TRUE, fig.width=10, fig.height=3}
+par( mfrow=c(1,2) )
+hist( mpg[which(automatic == TRUE)] )
+hist( mpg[which(automatic == FALSE)] )
+```
+
+Estimate the base model.
+```{r echo=TRUE, eval=TRUE}
+ols <- lm( mpg ~ automatic, data=mtcars )
+summary( ols )
+
+```
+
+Include likely covariates (a.k.a. control variables).
+
+```{r echo=TRUE, eval=TRUE, fig.width=10, fig.height=3}
+tsls.fs <- lm(automatic ~ wt)
+tsls <- lm(mpg ~ tsls.fs$fitted.values)
+summary(tsls)
+par( mfrow=c(1,2) )
+hist( ols$residuals )
+hist( tsls$residuals )
+```
